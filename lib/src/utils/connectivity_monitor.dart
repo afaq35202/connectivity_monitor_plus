@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 /// A class that monitors the internet connectivity status and notifies listeners
 /// of any changes.
 class ConnectivityMonitor with ChangeNotifier {
   bool _hasInternet = true;
+  Timer? _timer;
+  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
 
   /// Returns true if there is internet connectivity.
   bool get hasInternet => _hasInternet;
@@ -24,16 +28,28 @@ class ConnectivityMonitor with ChangeNotifier {
     this._connectivityManager, {
     required this.checkActualInternet,
   }) {
-    _checkInternet();
-    _listenInternet();
+    if (kIsWeb) {
+      _startWebInternetCheck();
+    } else {
+      _startMobileInternetCheck();
+    }
   }
 
-  void _checkInternet() {
-    _connectivityManager.checkConnectivity().then(_internetResult);
+  // Use a periodic timer for web as connectivity_plus stream is unreliable.
+  void _startWebInternetCheck() {
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 4), (timer) async {
+      final isActuallyWorking = await isInternetWorking();
+      if (_hasInternet != isActuallyWorking) {
+        _hasInternet = isActuallyWorking;
+        notifyListeners();
+      }
+    });
   }
 
-  void _listenInternet() {
-    _connectivityManager.onConnectivityChanged.listen(_internetResult);
+  // Use the stream listener for mobile, as it's more efficient.
+  void _startMobileInternetCheck() {
+    _connectivitySubscription = _connectivityManager.onConnectivityChanged.listen(_internetResult);
   }
 
   void _internetResult(List<ConnectivityResult> result) async {
@@ -47,17 +63,27 @@ class ConnectivityMonitor with ChangeNotifier {
   }
 
   /// Checks if the internet connection is working.
-Future<bool> isInternetWorking() async {
-  try {
-    if (!checkActualInternet) {
-      return true;
+  Future<bool> isInternetWorking() async {
+    try {
+      if (!checkActualInternet) {
+        return true;
+      }
+      final url = kIsWeb
+          ? Uri.parse('https://one.one.one.one')
+          : Uri.parse('https://www.google.com');
+
+      final response = await http.get(url).timeout(const Duration(seconds: 10));
+
+      return response.statusCode == 200;
+    } on Exception {
+      return false;
     }
-    final response = await http
-        .get(Uri.parse('https://one.one.one.one'))
-        .timeout(const Duration(seconds: 10));
-    return response.statusCode == 200;
-  } on Exception catch (_) {
-    return false;
   }
-}
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
 }
