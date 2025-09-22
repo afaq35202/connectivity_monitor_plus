@@ -49,7 +49,8 @@ class ConnectivityMonitor with ChangeNotifier {
 
   // Use the stream listener for mobile, as it's more efficient.
   void _startMobileInternetCheck() {
-    _connectivitySubscription = _connectivityManager.onConnectivityChanged.listen(_internetResult);
+    _connectivitySubscription = _connectivityManager.onConnectivityChanged
+        .listen(_internetResult);
   }
 
   void _internetResult(List<ConnectivityResult> result) async {
