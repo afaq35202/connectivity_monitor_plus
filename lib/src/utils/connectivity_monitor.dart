@@ -47,18 +47,17 @@ class ConnectivityMonitor with ChangeNotifier {
   }
 
   /// Checks if the internet connection is working.
-  Future<bool> isInternetWorking() async {
-    try {
-      if (!checkActualInternet) {
-        return true;
-      }
-      final response = await http
-          .get(Uri.parse('https://www.google.com'))
-          .timeout(const Duration(seconds: 10));
-
-      return response.statusCode == 200; // Internet is working
-    } catch (_) {
-      return false; // No actual internet
+Future<bool> isInternetWorking() async {
+  try {
+    if (!checkActualInternet) {
+      return true;
     }
+    final response = await http
+        .get(Uri.parse('https://one.one.one.one'))
+        .timeout(const Duration(seconds: 10));
+    return response.statusCode == 200;
+  } on Exception catch (_) {
+    return false;
   }
+}
 }
