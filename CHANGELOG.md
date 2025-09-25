@@ -1,6 +1,12 @@
+## 0.1.1 - 2025-09-22
+- **Platform-aware Connectivity Check**: Implemented a platform-specific strategy to check for internet connection. 
+The app now uses the efficient `onConnectivityChanged` stream on mobile platforms and a more reliable periodic timer 
+for the web to prevent dialog issues.
+
+
 ## 0.1.0 - 2025-07-29
 
-###Added
+## Added
 
 - **Optional strict mode**: Introduced `checkActualInternet` flag to toggle between basic
   connectivity check and actual internet verification.
