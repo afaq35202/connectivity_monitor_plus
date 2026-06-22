@@ -1,3 +1,7 @@
+## 1.0.0
+- Updated repository and homepage URLs
+
+
 ## 0.1.1 - 2025-09-22
 - **Platform-aware Connectivity Check**: Implemented a platform-specific strategy to check for internet connection. 
 The app now uses the efficient `onConnectivityChanged` stream on mobile platforms and a more reliable periodic timer 

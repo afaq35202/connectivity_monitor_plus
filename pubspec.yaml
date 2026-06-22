@@ -1,10 +1,10 @@
 name: connectivity_monitor_plus
 description: "Flutter package for real-time network status and internet access checks by pinging a URL. Detects connectivity changes instantly."
-version: 0.1.0
-homepage: https://github.com/afaq3522/connectivity_monitor_plus
-repository: https://github.com/afaq3522/connectivity_monitor_plus
-issue_tracker: https://github.com/afaq3522/connectivity_monitor_plus/issues
-documentation: https://github.com/afaq3522/connectivity_monitor_plus#readme
+version: 1.0.0
+homepage: https://github.com/afaq35202/connectivity_monitor_plus
+repository: https://github.com/afaq35202/connectivity_monitor_plus
+issue_tracker: https://github.com/afaq35202/connectivity_monitor_plus/issues
+documentation: https://github.com/afaq35202/connectivity_monitor_plus#readme
 license: MIT
 
 environment:
